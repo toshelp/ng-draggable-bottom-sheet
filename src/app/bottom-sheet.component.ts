@@ -197,11 +197,11 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public isActive: boolean = false;
   public isDragging: boolean = false;
   private isFullScreen: boolean = false;
-  private dragPositionY: number = 0;
-  private currentPositionY: number = window.innerHeight;
-  private deltaY: number = 0;
-  public sheetTransform = `translate3d(0, ${this.currentPositionY}px, 0)`;
-  public mainHeight = `calc(100vh - ${this.currentPositionY}px)`;
+  private dragPositionYpx: number = 0;
+  private currentPositionY: number = 0;
+  private deltaYpx: number = 0;
+  public sheetTransform = `translate3d(0, 100%, 0)`;
+  public mainHeight = `100vh`;
 
   constructor() {}
 
@@ -237,18 +237,23 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     start$
       .pipe(
         tap((event) => {
+          this.currentPositionY = window.innerHeight * (this.currentPositionY / 100); // convert from % to px.
           this.isDragging = true;
-          this.dragPositionY = (event as TouchEvent).touches ? (event as TouchEvent).touches[0].pageY : (event as MouseEvent) ? (event as MouseEvent).pageY : 0;
+          this.dragPositionYpx = (event as TouchEvent).touches
+            ? (event as TouchEvent).touches[0].pageY
+            : (event as MouseEvent)
+            ? (event as MouseEvent).pageY
+            : 0;
         }),
         exhaustMap(() =>
           move$.pipe(
             tap((event) => {
               if ((event as TouchEvent).touches) {
-                this.deltaY = this.dragPositionY - (event as TouchEvent).touches[0].pageY;
+                this.deltaYpx = this.dragPositionYpx - (event as TouchEvent).touches[0].pageY;
               } else {
-                this.deltaY = this.dragPositionY - (event as MouseEvent).pageY;
+                this.deltaYpx = this.dragPositionYpx - (event as MouseEvent).pageY;
               }
-              this.sheetTransform = `translate3d(0, max(0px, ${this.currentPositionY - this.deltaY}px), 1px)`;
+              this.sheetTransform = `translate3d(0, max(0px, ${this.currentPositionY - this.deltaYpx}px), 1px)`;
             }),
             takeUntil(end$)
           )
@@ -260,7 +265,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     end$.subscribe(() => {
       if (this.isDragging) {
         this.isDragging = false;
-        this.currentPositionY = Math.max(this.currentPositionY - this.deltaY, 0);
+        this.currentPositionY = Math.max(this.currentPositionY - this.deltaYpx, 0);
         let positionY = ((window.innerHeight - this.currentPositionY) / window.innerHeight) * 100;
         this.setSheetHeight(positionY);
       }
@@ -270,7 +275,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     // DELETEME: This setTimeout is demo implementation.
     // please edit and customize this component.
     setTimeout(() => {
-      this.onActiveEvent(40);
+      this.onActiveEvent(50);
     }, 1000);
   }
 
@@ -293,12 +298,12 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       // DELETEME: This setTimeout is demo implementation.
       // please edit and customize this component.
       setTimeout(() => {
-        this.onActiveEvent(40);
+        this.onActiveEvent(50);
       }, 1000);
     }
 
-    this.currentPositionY = window.innerHeight - window.innerHeight * (ratio / 100);
-    this.sheetTransform = `translate3d(0, max(0px, ${this.currentPositionY}px), 0)`;
+    this.currentPositionY = 100 - ratio; // convert from px to %.
+    this.sheetTransform = `translate3d(0, max(0%, ${this.currentPositionY}%), 0)`;
     this.mainHeight = `calc(90vh - max(0px, ${this.currentPositionY}px)`;
   }
 
