@@ -256,10 +256,12 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       .subscribe();
 
     end$.subscribe(() => {
-      this.isDragging = false;
-      this.currentPositionY = Math.max(this.currentPositionY - this.deltaY, 0);
-      let positionY = ((window.innerHeight - this.currentPositionY) / window.innerHeight) * 100;
-      this.setSheetHeight(positionY);
+      if (this.isDragging) {
+        this.isDragging = false;
+        this.currentPositionY = Math.max(this.currentPositionY - this.deltaY, 0);
+        let positionY = ((window.innerHeight - this.currentPositionY) / window.innerHeight) * 100;
+        this.setSheetHeight(positionY);
+      }
     });
     this.isActive = false;
 
