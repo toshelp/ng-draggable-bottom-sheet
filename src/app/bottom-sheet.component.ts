@@ -105,7 +105,7 @@ import { takeUntil, tap } from 'rxjs';
         min-width: 16rem;
         min-height: 100%;
         padding: 1rem;
-        padding-top: 2.5rem;
+        padding-top: 42px;
         box-sizing: border-box;
         pointer-events: auto;
         transition: 300ms;
@@ -193,6 +193,7 @@ import { takeUntil, tap } from 'rxjs';
 })
 export class BottomSheetComponent implements OnInit, OnDestroy {
   @ViewChild('draggableArea', { static: true }) draggableArea!: ElementRef;
+  private readonly bottomPaddingPx = 90;
   private destroy$ = new Subject<void>();
   public isActive: boolean = false;
   public isDragging: boolean = false;
@@ -253,7 +254,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
               } else {
                 this.deltaYpx = this.dragPositionYpx - (event as MouseEvent).pageY;
               }
-              this.sheetTransform = `translate3d(0, max(0px, ${this.currentPositionY - this.deltaYpx}px), 1px)`;
+              this.sheetTransform = `translate3d(0, max(${0}px, ${this.currentPositionY - this.deltaYpx}px), 1px)`;
             }),
             takeUntil(end$)
           )
@@ -303,8 +304,8 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     }
 
     this.currentPositionY = 100 - ratio; // convert from px to %.
-    this.sheetTransform = `translate3d(0, max(0%, ${this.currentPositionY}%), 0)`;
-    this.mainHeight = `calc(90vh - max(0px, ${this.currentPositionY}px)`;
+    this.sheetTransform = `translate3d(0, max(${0}px, ${this.currentPositionY}%), 0)`;
+    this.mainHeight = `calc(${100 - this.currentPositionY}vh - ${this.bottomPaddingPx}px)`;
   }
 
   public ngOnDestroy(): void {
