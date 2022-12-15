@@ -170,7 +170,9 @@ import { takeUntil, tap } from 'rxjs';
       .main {
         overflow: auto;
         padding: 0.8rem;
+        height: 100%;
         scrollbar-gutter: stable;
+        padding-bottom: 80px;
         transition: max-height 300ms;
         will-change: max-height;
       }
@@ -202,7 +204,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   private currentPositionY: number = 0;
   private deltaYpx: number = 0;
   public sheetTransform = `translate3d(0, 100%, 0)`;
-  public mainHeight = `100vh`;
+  public mainHeight = `100%`;
 
   constructor() {}
 
@@ -305,7 +307,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
 
     this.currentPositionY = 100 - ratio; // convert from px to %.
     this.sheetTransform = `translate3d(0, max(${0}px, ${this.currentPositionY}%), 0)`;
-    this.mainHeight = `calc(${100 - this.currentPositionY}vh - ${this.bottomPaddingPx}px)`;
+    this.mainHeight = `calc(100% - ${this.currentPositionY}vh - ${this.bottomPaddingPx}px)`;
   }
 
   public ngOnDestroy(): void {
