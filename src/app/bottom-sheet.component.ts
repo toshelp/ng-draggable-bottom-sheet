@@ -69,8 +69,8 @@ import { takeUntil, tap } from 'rxjs';
         flex-direction: column;
         flex-grow: 1;
         word-break: break-word;
-        min-height: 100%;
-        max-height: 100%;
+        min-height: 100vh;
+        max-height: 100vh;
         width: 100vw;
         align-items: center;
         pointer-events: none;
@@ -79,8 +79,10 @@ import { takeUntil, tap } from 'rxjs';
       }
 
       .onSheetDragging {
+        /*
         transition: transform 40ms linear;
         will-change: transform;
+        */
       }
 
       .notSheetDragging {
