@@ -12,46 +12,31 @@ import { takeUntil, tap } from 'rxjs';
           <div #draggableArea class="draggableArea">
             <div class="draggableThumb"></div>
           </div>
-          <button class="closingButton" type="button" (click)="onCloseEvent()">×</button>
+          <button class="closingButton" type="button" (click)="onCloseEvent()">x</button>
+          <div class="dmzArea"></div>
         </header>
         <main class="main" [style.max-height]="mainHeight">
-          <h2>License</h2>
-          MIT License Copyright (c) 2022 toshelp Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-          documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
-          merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject
-          to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
-          Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-          MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-          DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-          OTHER DEALINGS IN THE SOFTWARE. MIT License Copyright (c) 2022 toshelp Permission is hereby granted, free of charge, to any person obtaining a copy of
-          this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
-          rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-          furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or
-          substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
-          THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-          FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-          SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. MIT License Copyright (c) 2022 toshelp Permission is hereby granted, free of charge, to any
-          person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including
-          without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
-          to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be
-          included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-          INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-          COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-          CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. MIT License Copyright (c) 2022 toshelp Permission is hereby granted, free
-          of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without
-          restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-          and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission
-          notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-          EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-          SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-          ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. MIT License Copyright (c) 2022 toshelp
-          Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to
-          deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-          sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above
-          copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS",
-          WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-          NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-          CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+          <h2>Angular draggable bottom sheet</h2>
+          <h2>configuration</h2>
+          <label>topMagneticThreshold:</label>
+          <input type="number" [(ngModel)]="topMagneticThreshold" style="max-width: 3rem;" />%<br />
+          <label>bottomMagneticThreshold:</label>
+          <input type="number" [(ngModel)]="bottomMagneticThreshold" style="max-width: 3rem;" />%<br />
+          <label>topMarginThresholdPx:</label>
+          <input type="number" [(ngModel)]="topMarginThresholdPx" style="max-width: 3rem;" />pixel<br />
+          <label>bottomMarginThresholdPx:</label>
+          <input type="number" [(ngModel)]="bottomMarginThresholdPx" style="max-width: 3rem;" />pixel<br />
+          <label>bottomPaddingPx:</label>
+          <input type="number" [(ngModel)]="bottomPaddingPx" style="max-width: 3rem;" />pixel<br />
+          <h2>MIT License</h2>
+          Copyright (c) 2022 toshelp Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+          files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish,
+          distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following
+          conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE
+          SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+          FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+          LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+          IN THE SOFTWARE.
         </main>
       </div>
     </div>
@@ -153,10 +138,21 @@ import { takeUntil, tap } from 'rxjs';
         border-radius: 0.125rem;
       }
 
+      .dmzArea {
+        position: absolute;
+        top: 2rem;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 1rem;
+        pointer-events: auto;
+        z-index: 11;
+      }
+
       .closingButton {
         position: absolute;
         top: 9px;
-        right: 10px;
+        right: 11px;
         padding: 0.2rem;
         font-size: 1rem;
         border-radius: 1rem;
@@ -198,11 +194,11 @@ import { takeUntil, tap } from 'rxjs';
 })
 export class BottomSheetComponent implements OnInit, OnDestroy {
   @ViewChild('draggableArea', { static: true }) draggableArea!: ElementRef;
-  private readonly topMagneticThreshold: number = 70; // configurable parameter
-  private readonly bottomMagneticThreshold: number = 35; // configurable parameter
-  private readonly topMarginThresholdPx: number = 0; // configurable parameter
-  private readonly bottomMarginThresholdPx: number = 0; // configurable parameter
-  private readonly bottomPaddingPx: number = 90; // configurable parameter
+  public topMagneticThreshold: number = 70; // configurable parameter
+  public bottomMagneticThreshold: number = 35; // configurable parameter
+  public topMarginThresholdPx: number = 0; // configurable parameter
+  public bottomMarginThresholdPx: number = 0; // configurable parameter
+  public bottomPaddingPx: number = 80; // configurable parameter
   private destroy$ = new Subject<void>();
   public isActive: boolean = false;
   public isDragging: boolean = false;
@@ -292,7 +288,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   }
 
   public setSheetHeight(heightRatio: number): void {
-    let targetRatio: number | undefined;
+    let targetRatio: number = 0;
     if (heightRatio > this.topMagneticThreshold) {
       this.isFullScreen = true;
       this.isActive = true;
@@ -325,7 +321,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       this.sheetTransform = `translate3d(0, ${this.currentPositionY}%, 0)`;
       this.currentPositionY = targetRatio;
     }
-    this.mainHeight = `calc(100% - ${this.currentPositionY}% - ${this.bottomPaddingPx}px)`;
+    this.mainHeight = `calc(100% - ${this.currentPositionY}% - ${this.bottomPaddingPx}px - 2rem)`;
 
     // DELETEME: This "if" block is demo implementation.
     if (!this.isActive) {
