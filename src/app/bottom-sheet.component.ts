@@ -80,7 +80,7 @@ import { takeUntil, tap } from 'rxjs';
       }
 
       .onSheetDragging {
-        /*  This transition has some jitter problems. */
+        /* This transition has some jitter problems. */
         /*
         transition: transform 40ms linear;
         will-change: transform;
@@ -197,7 +197,11 @@ import { takeUntil, tap } from 'rxjs';
 })
 export class BottomSheetComponent implements OnInit, OnDestroy {
   @ViewChild('draggableArea', { static: true }) draggableArea!: ElementRef;
-  private readonly bottomPaddingPx = 90;
+  private readonly topMagneticThreshold: number = 70; // configurable parameter
+  private readonly bottomMagneticThreshold: number = 35; // configurable parameter
+  private readonly topMarginThresholdPx: number = 0; // configurable parameter
+  private readonly bottomMarginThresholdPx: number = 0; // configurable parameter
+  private readonly bottomPaddingPx: number = 90; // configurable parameter
   private destroy$ = new Subject<void>();
   public isActive: boolean = false;
   public isDragging: boolean = false;
@@ -261,7 +265,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
                 this.deltaYpx = this.dragPositionYpx - (event as MouseEvent).pageY;
               }
               this.deltaHeight = (this.deltaYpx / window.innerHeight) * 100;
-              this.sheetTransform = `translate3d(0, max(0%, ${this.currentPositionY - this.deltaHeight}%), 1px)`;
+              this.sheetTransform = `translate3d(0, calc(max(${this.topMarginThresholdPx}px, ${this.currentPositionY - this.deltaHeight}%)), 1px)`;
             }),
             takeUntil(end$)
           )
@@ -281,38 +285,53 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     this.isActive = false;
 
     // DELETEME: This setTimeout is demo implementation.
-    // please edit and customize this component.
     setTimeout(() => {
       this.onActiveEvent(50);
     }, 1000);
   }
 
   public setSheetHeight(heightRatio: number): void {
-    if (heightRatio >= 35) {
-      this.isActive = true;
-    }
-    let ratio = 0;
-    if (heightRatio > 70) {
-      ratio = 100;
+    let targetRatio: number | undefined;
+    if (heightRatio > this.topMagneticThreshold) {
       this.isFullScreen = true;
-    } else if (heightRatio <= 70 && heightRatio >= 35) {
-      ratio = 50;
-      this.isFullScreen = false;
-    } else {
-      ratio = 0;
+      this.isActive = true;
+      targetRatio = 100;
+    } else if (heightRatio < this.bottomMagneticThreshold && this.bottomMarginThresholdPx <= 0) {
       this.isFullScreen = false;
       this.isActive = false;
+      targetRatio = 0;
+    } else if (heightRatio < this.bottomMagneticThreshold && this.bottomMarginThresholdPx > 0) {
+      this.isFullScreen = false;
+      this.isActive = true;
+      targetRatio = 0;
+    } else if (heightRatio <= this.topMagneticThreshold && heightRatio >= this.bottomMagneticThreshold) {
+      this.isFullScreen = false;
+      this.isActive = true;
+      targetRatio = 50;
+    }
 
-      // DELETEME: This setTimeout is demo implementation.
-      // please edit and customize this component.
+    this.currentPositionY = 100 - targetRatio!;
+    if (this.isFullScreen && this.isActive) {
+      this.sheetTransform = `translate3d(0, calc(${this.currentPositionY}% + ${this.topMarginThresholdPx}px), 0)`;
+      this.currentPositionY = 100 - ((window.innerHeight - this.topMarginThresholdPx) / window.innerHeight) * 100;
+    } else if (!this.isFullScreen && !this.isActive) {
+      this.sheetTransform = `translate3d(0, 100%, 0)`;
+      this.currentPositionY = 100;
+    } else if (!this.isFullScreen && this.isActive && targetRatio === 0) {
+      this.sheetTransform = `translate3d(0, calc(${this.currentPositionY}% - ${this.bottomMarginThresholdPx}px), 0)`;
+      this.currentPositionY = ((window.innerHeight - this.bottomMarginThresholdPx) / window.innerHeight) * 100;
+    } else if (!this.isFullScreen && this.isActive && targetRatio === 50) {
+      this.sheetTransform = `translate3d(0, ${this.currentPositionY}%, 0)`;
+      this.currentPositionY = targetRatio;
+    }
+    this.mainHeight = `calc(100% - ${this.currentPositionY}% - ${this.bottomPaddingPx}px)`;
+
+    // DELETEME: This "if" block is demo implementation.
+    if (!this.isActive) {
       setTimeout(() => {
         this.onActiveEvent(50);
       }, 1000);
     }
-
-    this.currentPositionY = 100 - ratio;
-    this.sheetTransform = `translate3d(0, ${this.currentPositionY}%, 0)`;
-    this.mainHeight = `calc(100% - ${this.currentPositionY}% - ${this.bottomPaddingPx}px)`;
   }
 
   public ngOnDestroy(): void {
