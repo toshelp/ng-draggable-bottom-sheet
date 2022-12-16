@@ -72,6 +72,7 @@ import { takeUntil, tap } from 'rxjs';
         min-height: 100%;
         max-height: 100%;
         width: 100%;
+        height: 100%;
         align-items: center;
         pointer-events: none;
         user-select: none;
