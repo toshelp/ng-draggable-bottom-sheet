@@ -261,7 +261,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
                 this.deltaYpx = this.dragPositionYpx - (event as MouseEvent).pageY;
               }
               this.deltaHeight = (this.deltaYpx / window.innerHeight) * 100;
-              this.sheetTransform = `translate3d(0, ${this.currentPositionY - this.deltaHeight}%, 1px)`;
+              this.sheetTransform = `translate3d(0, max(0%, ${this.currentPositionY - this.deltaHeight}%), 1px)`;
             }),
             takeUntil(end$)
           )
