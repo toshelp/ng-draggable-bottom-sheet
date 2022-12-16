@@ -80,9 +80,10 @@ import { takeUntil, tap } from 'rxjs';
       }
 
       .onSheetDragging {
-        /* This transition has some jitter problems. */
+        /* This transition has case of any jitter problems. */
         /*
-        transition: transform 40ms linear;
+        transition: transform 30ms ease-in;
+        backface-visibility: hidden;
         will-change: transform;
         */
       }
