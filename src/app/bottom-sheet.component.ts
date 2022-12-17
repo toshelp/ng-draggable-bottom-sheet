@@ -205,7 +205,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public bottomMarginThresholdPx: number = 0; // configurable parameter
   public bottomPaddingPx: number = 80; // configurable parameter
   public enableDetectMotionMode: boolean = true; // configrable parameter
-  public motionThreshold: number = 100; // configrable parameter
+  public motionThreshold: number = 60; // configrable parameter
   public sheetTransform = `translate3d(0, 100%, 0)`;
   public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
@@ -296,7 +296,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
 
   private detectMotion(): number {
     if (this.enableDetectMotionMode) {
-      let delta = 100 - this.currentPositionY + this.deltaHeight;
+      let delta = 100 - this.currentPositionY;
       if (this.deltaHeight > (this.motionThreshold / window.innerHeight) * 100) {
         if (delta < 50) {
           return 50;
