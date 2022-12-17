@@ -70,12 +70,11 @@ import { takeUntil, tap } from 'rxjs';
       }
 
       .onSheetDragging {
-        /* This transition has case of any jitter problems. */
-        /*
-        transition: transform 30ms linear;
+        /* HACK: This transition has case of any jitter problems. */
+        /* Use chromium only. */
+        transition: transform 40ms linear;
         backface-visibility: hidden;
         will-change: transform;
-        */
       }
 
       .notSheetDragging {
@@ -216,14 +215,33 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   private currentPositionY: number = 0;
   private deltaYpx: number = 0;
   private deltaHeight: number = 0;
+  private isChromium: boolean = false; // HACK: chromium only code should be removed.
 
-  constructor() {}
+  constructor() {
+    this.isChromium = this.checkChromium();
+  }
+
+  private checkChromium(): boolean {
+    // @ts-ignore
+    if (navigator.userAgentData != undefined) {
+      // @ts-ignore
+      console.log(navigator.userAgentData);
+      // @ts-ignore
+      const browserInfo = navigator.userAgentData.brands.find((data: any) => data.brand === 'Chromium');
+      if (browserInfo != undefined) {
+        return true;
+      }
+    } else if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
+      return true;
+    }
+    return false;
+  }
 
   public sheetClass() {
     return {
       sheet: true,
       inactive: !this.isActive,
-      onSheetDragging: this.isDragging,
+      onSheetDragging: this.isDragging && this.isChromium,
       notSheetDragging: !this.isDragging,
     };
   }
