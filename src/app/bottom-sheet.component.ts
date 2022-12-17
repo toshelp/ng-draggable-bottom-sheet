@@ -199,13 +199,13 @@ import { takeUntil, tap } from 'rxjs';
 })
 export class BottomSheetComponent implements OnInit, OnDestroy {
   @ViewChild('draggableArea', { static: true }) draggableArea!: ElementRef;
-  public topMagneticThreshold: number = 70; // configurable parameter
-  public bottomMagneticThreshold: number = 35; // configurable parameter
+  public topMagneticThreshold: number = 75; // configurable parameter
+  public bottomMagneticThreshold: number = 25; // configurable parameter
   public topMarginThresholdPx: number = 0; // configurable parameter
   public bottomMarginThresholdPx: number = 0; // configurable parameter
   public bottomPaddingPx: number = 80; // configurable parameter
   public enableDetectMotionMode: boolean = true; // configrable parameter
-  public motionThreshold: number = 15; // configrable parameter
+  public motionThreshold: number = 100; // configrable parameter
   public sheetTransform = `translate3d(0, 100%, 0)`;
   public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
@@ -297,7 +297,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   private detectMotion(): number {
     if (this.enableDetectMotionMode) {
       let delta = 100 - this.currentPositionY + this.deltaHeight;
-      if (this.deltaHeight > this.motionThreshold) {
+      if (this.deltaHeight > (this.motionThreshold / window.innerHeight) * 100) {
         if (delta < 50) {
           return 50;
         }
@@ -305,7 +305,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
           return 100;
         }
       }
-      if (this.deltaHeight < this.motionThreshold * -1) {
+      if (this.deltaHeight < (this.motionThreshold / window.innerHeight) * 100 * -1) {
         if (delta > 50) {
           return 50;
         }
