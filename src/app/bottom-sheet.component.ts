@@ -67,7 +67,7 @@ import { takeUntil, tap } from 'rxjs';
       .onSheetDragging {
         /* This transition has case of any jitter problems. */
         /*
-        transition: transform 30ms ease-in;
+        transition: transform 30ms linear;
         backface-visibility: hidden;
         will-change: transform;
         */
@@ -199,16 +199,16 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public topMarginThresholdPx: number = 0; // configurable parameter
   public bottomMarginThresholdPx: number = 0; // configurable parameter
   public bottomPaddingPx: number = 80; // configurable parameter
+  public sheetTransform = `translate3d(0, 100%, 0)`;
+  public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
-  public isActive: boolean = false;
-  public isDragging: boolean = false;
+  private isActive: boolean = false;
+  private isDragging: boolean = false;
   private isFullScreen: boolean = false;
   private dragPositionYpx: number = 0;
   private currentPositionY: number = 0;
   private deltaYpx: number = 0;
   private deltaHeight: number = 0;
-  public sheetTransform = `translate3d(0, 100%, 0)`;
-  public mainHeight = `100%`;
 
   constructor() {}
 
