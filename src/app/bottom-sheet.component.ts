@@ -28,6 +28,11 @@ import { takeUntil, tap } from 'rxjs';
           <input type="number" [(ngModel)]="bottomMarginThresholdPx" style="max-width: 3rem;" />pixel<br />
           <label>bottomPaddingPx:</label>
           <input type="number" [(ngModel)]="bottomPaddingPx" style="max-width: 3rem;" />pixel<br />
+          <label>enableDetectMotionMode:</label>
+          true <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="true" name="predictMode" style="max-width: 3rem;" /> false
+          <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="false" name="predictMode" style="max-width: 3rem;" /><br />
+          <label>motionThreshold:</label>
+          <input type="number" [(ngModel)]="motionThreshold" style="max-width: 3rem;" />pixel<br />
           <h2>MIT License</h2>
           Copyright (c) 2022 toshelp Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
           files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -199,6 +204,8 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public topMarginThresholdPx: number = 0; // configurable parameter
   public bottomMarginThresholdPx: number = 0; // configurable parameter
   public bottomPaddingPx: number = 80; // configurable parameter
+  public enableDetectMotionMode: boolean = true; // configrable parameter
+  public motionThreshold: number = 15; // configrable parameter
   public sheetTransform = `translate3d(0, 100%, 0)`;
   public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
@@ -275,7 +282,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       if (this.isDragging) {
         this.isDragging = false;
         this.currentPositionY = this.currentPositionY - this.deltaHeight;
-        this.setSheetHeight(100 - this.currentPositionY);
+        this.setSheetHeight(this.detectMotion());
       }
     });
 
@@ -287,7 +294,30 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     }, 1000);
   }
 
-  public setSheetHeight(heightRatio: number): void {
+  private detectMotion(): number {
+    if (this.enableDetectMotionMode) {
+      let delta = 100 - this.currentPositionY + this.deltaHeight;
+      if (this.deltaHeight > this.motionThreshold) {
+        if (delta < 50) {
+          return 50;
+        }
+        if (delta >= 50) {
+          return 100;
+        }
+      }
+      if (this.deltaHeight < this.motionThreshold * -1) {
+        if (delta > 50) {
+          return 50;
+        }
+        if (delta < 50) {
+          return 0;
+        }
+      }
+    }
+    return 100 - this.currentPositionY;
+  }
+
+  private setSheetHeight(heightRatio: number): void {
     let targetRatio: number = 0;
     if (heightRatio > this.topMagneticThreshold) {
       this.isFullScreen = true;
