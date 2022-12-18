@@ -28,7 +28,9 @@ import { takeUntil, tap } from 'rxjs';
           <input type="number" [(ngModel)]="bottomMarginThresholdPx" style="max-width: 3rem;" />pixel<br />
           <label>bottomPaddingPx:</label>
           <input type="number" [(ngModel)]="bottomPaddingPx" style="max-width: 3rem;" />pixel<br />
-          <label>enableDetectMotionMode:</label> true
+          <label>middlePositionThreshold:</label>
+          <input type="number" [(ngModel)]="middlePositionThreshold" style="max-width: 3rem;" />%<br />
+          <label>enableDetectMotionMode(override magnetic settings):</label> true
           <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="true" name="motionMode" style="max-width: 3rem;" /> false
           <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="false" name="motionMode" style="max-width: 3rem;" /><br />
           <label>motionThresholdPx:</label>
@@ -93,7 +95,7 @@ import { takeUntil, tap } from 'rxjs';
         background: #fff;
         position: relative;
         width: 100vw;
-        max-width: 40rem;
+        max-width: 50rem;
         min-width: 16rem;
         min-height: 100%;
         padding: 1rem;
@@ -205,6 +207,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public bottomPaddingPx: number = 80; // configurable parameter
   public enableDetectMotionMode: boolean = true; // configurable parameter
   public motionThresholdPx: number = 60; // configurable parameter
+  public middlePositionThreshold: number = 40; // configurable parameter
   public sheetTransform = `translate3d(0, 100%, 0)`;
   public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
@@ -314,18 +317,18 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     if (this.enableDetectMotionMode) {
       let delta = 100 - this.currentPositionY;
       if (this.deltaHeight > (this.motionThresholdPx / window.innerHeight) * 100) {
-        if (delta < 50) {
-          return 50;
+        if (delta < this.middlePositionThreshold) {
+          return this.middlePositionThreshold;
         }
-        if (delta >= 50) {
+        if (delta >= this.middlePositionThreshold) {
           return 100;
         }
       }
       if (this.deltaHeight < (this.motionThresholdPx / window.innerHeight) * 100 * -1) {
-        if (delta > 50) {
-          return 50;
+        if (delta > this.middlePositionThreshold) {
+          return this.middlePositionThreshold;
         }
-        if (delta < 50) {
+        if (delta < this.middlePositionThreshold) {
           return 0;
         }
       }
@@ -350,7 +353,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     } else if (heightRatio <= this.topMagneticThreshold && heightRatio >= this.bottomMagneticThreshold) {
       this.isFullScreen = false;
       this.isActive = true;
-      targetRatio = 50;
+      targetRatio = this.middlePositionThreshold;
     }
 
     this.currentPositionY = 100 - targetRatio!;
@@ -363,9 +366,9 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     } else if (!this.isFullScreen && this.isActive && targetRatio === 0) {
       this.sheetTransform = `translate3d(0, calc(${this.currentPositionY}% - ${this.bottomMarginThresholdPx}px), 0)`;
       this.currentPositionY = ((window.innerHeight - this.bottomMarginThresholdPx) / window.innerHeight) * 100;
-    } else if (!this.isFullScreen && this.isActive && targetRatio === 50) {
+    } else if (!this.isFullScreen && this.isActive && targetRatio === this.middlePositionThreshold) {
       this.sheetTransform = `translate3d(0, ${this.currentPositionY}%, 0)`;
-      this.currentPositionY = targetRatio;
+      this.currentPositionY = 100 - targetRatio;
     }
     this.mainHeight = `calc(100% - ${this.currentPositionY}% - ${this.bottomPaddingPx}px - 2rem)`;
 
