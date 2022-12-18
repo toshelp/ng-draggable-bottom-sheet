@@ -28,11 +28,11 @@ import { takeUntil, tap } from 'rxjs';
           <input type="number" [(ngModel)]="bottomMarginThresholdPx" style="max-width: 3rem;" />pixel<br />
           <label>bottomPaddingPx:</label>
           <input type="number" [(ngModel)]="bottomPaddingPx" style="max-width: 3rem;" />pixel<br />
-          <label>enableDetectMotionMode:</label>
-          true <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="true" name="predictMode" style="max-width: 3rem;" /> false
-          <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="false" name="predictMode" style="max-width: 3rem;" /><br />
-          <label>motionThreshold:</label>
-          <input type="number" [(ngModel)]="motionThreshold" style="max-width: 3rem;" />pixel<br />
+          <label>enableDetectMotionMode:</label> true
+          <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="true" name="motionMode" style="max-width: 3rem;" /> false
+          <input type="radio" [(ngModel)]="enableDetectMotionMode" [value]="false" name="motionMode" style="max-width: 3rem;" /><br />
+          <label>motionThresholdPx:</label>
+          <input type="number" [(ngModel)]="motionThresholdPx" style="max-width: 3rem;" />pixel<br />
           <h2>MIT License</h2>
           Copyright (c) 2022 toshelp Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
           files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -203,8 +203,8 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public topMarginThresholdPx: number = 0; // configurable parameter
   public bottomMarginThresholdPx: number = 0; // configurable parameter
   public bottomPaddingPx: number = 80; // configurable parameter
-  public enableDetectMotionMode: boolean = true; // configrable parameter
-  public motionThreshold: number = 60; // configrable parameter
+  public enableDetectMotionMode: boolean = true; // configurable parameter
+  public motionThresholdPx: number = 60; // configurable parameter
   public sheetTransform = `translate3d(0, 100%, 0)`;
   public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
@@ -224,8 +224,6 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   private checkChromium(): boolean {
     // @ts-ignore
     if (navigator.userAgentData != undefined) {
-      // @ts-ignore
-      console.log(navigator.userAgentData);
       // @ts-ignore
       const browserInfo = navigator.userAgentData.brands.find((data: any) => data.brand === 'Chromium');
       if (browserInfo != undefined) {
@@ -315,7 +313,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   private detectMotion(): number {
     if (this.enableDetectMotionMode) {
       let delta = 100 - this.currentPositionY;
-      if (this.deltaHeight > (this.motionThreshold / window.innerHeight) * 100) {
+      if (this.deltaHeight > (this.motionThresholdPx / window.innerHeight) * 100) {
         if (delta < 50) {
           return 50;
         }
@@ -323,7 +321,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
           return 100;
         }
       }
-      if (this.deltaHeight < (this.motionThreshold / window.innerHeight) * 100 * -1) {
+      if (this.deltaHeight < (this.motionThresholdPx / window.innerHeight) * 100 * -1) {
         if (delta > 50) {
           return 50;
         }
@@ -386,6 +384,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public onActiveEvent(heightRatio: number): void {
     this.setSheetHeight(heightRatio);
   }
+
   public onCloseEvent(): void {
     this.setSheetHeight(0);
   }
