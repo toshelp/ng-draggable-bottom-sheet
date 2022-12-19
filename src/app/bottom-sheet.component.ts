@@ -69,6 +69,7 @@ import { takeUntil, tap } from 'rxjs';
         pointer-events: none;
         user-select: none;
         -webkit-user-select: none;
+        overscroll-behavior: contain;
       }
 
       .onSheetDragging {
@@ -102,6 +103,7 @@ import { takeUntil, tap } from 'rxjs';
         padding-top: 42px;
         box-sizing: border-box;
         pointer-events: auto;
+        overscroll-behavior: contain;
         transition: 300ms;
         will-change: transform;
       }
@@ -177,6 +179,7 @@ import { takeUntil, tap } from 'rxjs';
         padding: 0.8rem;
         height: 100%;
         scrollbar-gutter: stable;
+        overscroll-behavior: contain;
         padding-bottom: 80px;
         transition: max-height 300ms;
         will-change: max-height;
@@ -261,7 +264,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     const mousemove$ = fromEvent(window, 'mousemove');
     const mouseup$ = fromEvent(window, 'mouseup');
     const touchstart$ = fromEvent(this.draggableArea.nativeElement, 'touchstart');
-    const touchmove$ = fromEvent(window, 'touchmove');
+    const touchmove$ = fromEvent(window, 'touchmove', { passive: false });
     const touchend$ = fromEvent(window, 'touchend');
     const start$ = merge(touchstart$, mousedown$);
     const move$ = merge(touchmove$, mousemove$);
@@ -283,6 +286,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
           move$.pipe(
             tap((event) => {
               if ((event as TouchEvent).touches) {
+                (event as TouchEvent).preventDefault();
                 this.deltaYpx = this.dragPositionYpx - (event as TouchEvent).touches[0].pageY;
               } else {
                 this.deltaYpx = this.dragPositionYpx - (event as MouseEvent).pageY;
