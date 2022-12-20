@@ -12,7 +12,8 @@ import { takeUntil, tap } from 'rxjs';
           <div #draggableArea class="draggableArea">
             <div class="draggableThumb"></div>
           </div>
-          <button class="closingButton" type="button" (click)="onCloseEvent()">x</button>
+          <button class="closingButton" type="button" (click)="onCloseEvent()"><i class="fa-solid fa-x"></i></button>
+          <!-- <button [ngClass]="expandClass()" type="button" (click)="onExpandEvent()"><i class="fa-solid fa-angle-up"></i></button> -->
           <div class="dmzArea"></div>
         </header>
         <main class="main" [style.max-height]="mainHeight">
@@ -160,9 +161,9 @@ import { takeUntil, tap } from 'rxjs';
       .closingButton {
         position: absolute;
         top: 9px;
-        right: 11px;
+        right: 10px;
         padding: 0.2rem;
-        font-size: 1rem;
+        font-size: 0.8rem;
         border-radius: 1rem;
         background: rgba(0, 0, 0, 0);
         cursor: pointer;
@@ -172,6 +173,34 @@ import { takeUntil, tap } from 'rxjs';
 
       .closingButton:focus {
         outline: none;
+      }
+
+      .expandButton {
+        position: absolute;
+        top: 9px;
+        left: 11px;
+        padding: 0.2rem;
+        font-size: 1.2rem;
+        border-radius: 1rem;
+        background: rgba(0, 0, 0, 0);
+        cursor: pointer;
+        border-width: 0;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        transform: rotate(0deg);
+      }
+
+      .unExpandButton {
+        position: absolute;
+        top: 9px;
+        left: 11px;
+        padding: 0.2rem;
+        font-size: 1.2rem;
+        border-radius: 1rem;
+        background: rgba(0, 0, 0, 0);
+        cursor: pointer;
+        border-width: 0;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        transform: rotate(180deg);
       }
 
       .main {
@@ -214,6 +243,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   public sheetTransform = `translate3d(0, 100%, 0)`;
   public mainHeight = `100%`;
   private destroy$ = new Subject<void>();
+  private isExpanded: boolean = false;
   private isActive: boolean = false;
   private isDragging: boolean = false;
   private isFullScreen: boolean = false;
@@ -256,6 +286,13 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       onContentsDragging: this.isDragging,
       notContentsDragging: !this.isDragging,
       notFullScreen: !this.isFullScreen,
+    };
+  }
+
+  public expandClass() {
+    return {
+      expandButton: !this.isExpanded,
+      unExpandButton: this.isExpanded,
     };
   }
 
@@ -360,6 +397,12 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       targetRatio = this.middlePositionThreshold;
     }
 
+    if (targetRatio === 100) {
+      this.isExpanded = true;
+    } else {
+      this.isExpanded = false;
+    }
+
     this.currentPositionY = 100 - targetRatio!;
     if (this.isFullScreen && this.isActive) {
       this.sheetTransform = `translate3d(0, calc(${this.currentPositionY}% + ${this.topMarginThresholdPx}px), 0)`;
@@ -384,15 +427,30 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnDestroy(): void {
-    this.destroy$.next();
-  }
-
   public onActiveEvent(heightRatio: number): void {
+    if (heightRatio === 100) {
+      this.isExpanded = true;
+    } else {
+      this.isExpanded = false;
+    }
     this.setSheetHeight(heightRatio);
   }
 
   public onCloseEvent(): void {
     this.setSheetHeight(0);
+  }
+
+  public onExpandEvent(): void {
+    if (this.isExpanded) {
+      this.setSheetHeight(0);
+      this.isExpanded = false;
+    } else {
+      this.onActiveEvent(100);
+      this.isExpanded = true;
+    }
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
   }
 }
