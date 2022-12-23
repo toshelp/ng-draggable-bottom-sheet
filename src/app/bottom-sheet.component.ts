@@ -132,8 +132,9 @@ import { takeUntil, tap } from 'rxjs';
         left: 0;
         right: 0;
         width: 50%;
+        height: 2rem;
         margin: auto;
-        padding: 1rem;
+        padding: 0.5rem;
         cursor: grab;
         text-align: center;
         text-align: -moz-center;
@@ -149,7 +150,7 @@ import { takeUntil, tap } from 'rxjs';
 
       .dmzArea {
         position: absolute;
-        top: 2rem;
+        top: 2.5rem;
         left: 0;
         right: 0;
         width: 100%;
