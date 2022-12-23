@@ -397,7 +397,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
       targetRatio = this.middlePositionThreshold;
     }
 
-    if (targetRatio === 100) {
+    if (targetRatio > 0) {
       this.isExpanded = true;
     } else {
       this.isExpanded = false;
@@ -428,10 +428,8 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   }
 
   public onActiveEvent(heightRatio: number): void {
-    if (heightRatio === 100) {
+    if (heightRatio > 0) {
       this.isExpanded = true;
-    } else {
-      this.isExpanded = false;
     }
     this.setSheetHeight(heightRatio);
   }
