@@ -75,7 +75,6 @@ import { takeUntil, tap } from 'rxjs';
 
       .onSheetDragging {
         /* HACK: This transition has case of any jitter problems. */
-        /* Use chromium only. */
         transition: transform 40ms linear;
         backface-visibility: hidden;
         will-change: transform;
@@ -252,7 +251,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
   private currentPositionY: number = 0;
   private deltaYpx: number = 0;
   private deltaHeight: number = 0;
-  private isChromium: boolean = false; // HACK: chromium only code should be removed.
+  private isChromium: boolean = false;
 
   constructor() {
     this.isChromium = this.checkChromium();
@@ -276,7 +275,8 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
     return {
       sheet: true,
       inactive: !this.isActive,
-      onSheetDragging: this.isDragging && this.isChromium,
+      // onSheetDragging: this.isDragging && this.isChromium,
+      onSheetDragging: this.isDragging,
       notSheetDragging: !this.isDragging,
     };
   }
@@ -330,7 +330,7 @@ export class BottomSheetComponent implements OnInit, OnDestroy {
                 this.deltaYpx = this.dragPositionYpx - (event as MouseEvent).pageY;
               }
               this.deltaHeight = (this.deltaYpx / window.innerHeight) * 100;
-              this.sheetTransform = `translate3d(0, calc(max(${this.topMarginThresholdPx}px, ${this.currentPositionY - this.deltaHeight}%)), 1px)`;
+              this.sheetTransform = `translate3d(0, calc(max(${this.topMarginThresholdPx}px, ${Math.floor(this.currentPositionY - this.deltaHeight)}%)), 1px)`;
             }),
             takeUntil(end$)
           )
